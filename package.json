@@ -20,7 +20,7 @@
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "heroku-postbuild": "npm run build"
   },
-  "author": "Jesse Obinna Egbosionu",
+  "author": "Mmakwe Onyeka Blessing",
   "license": "MIT",
   "dependencies": {
     "@sendgrid/mail": "^6.3.1",
