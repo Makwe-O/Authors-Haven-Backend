@@ -1,12 +1,7 @@
 {
-  "name": "neon-authorshaven",
+  "name": "authorshaven",
   "version": "1.0.0",
   "description": "A Social platform for the creative at heart",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/andela/neon-ah-backend.git"
-  },
   "engines": {
     "node": "10.14.1"
   },
@@ -17,7 +12,7 @@
     "seed": "babel-node node_modules/.bin/sequelize db:seed:all",
     "test-undoseed": "cross-env NODE_ENV=test npm run undoseed",
     "test-seed": "cross-env NODE_ENV=test npm run seed",
-    "build": "rimraf build/* && babel ./ -d build --ignore 'node_modules','coverage' ",
+    "build": "rm -rf build/* && babel ./ -d build --ignore node_modules,coverage",
     "start": "node build/index.js",
     "dev": "nodemon --exec babel-node ./index.js --env",
     "db:migrate:test": "cross-env NODE_ENV=test npm run migrate && npm run test-seed",
@@ -25,7 +20,7 @@
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "heroku-postbuild": "npm run build"
   },
-  "author": "Andela Simulations Programme",
+  "author": "Jesse Obinna Egbosionu",
   "license": "MIT",
   "dependencies": {
     "@sendgrid/mail": "^6.3.1",
@@ -79,7 +74,7 @@
     "eslint-plugin-import": "^2.14.0",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.9",
-    "nyc": "^13.1.0",
+    "nyc": "^14.1.1",
     "rimraf": "^2.6.3",
     "sinon": "^7.2.2",
     "sinon-chai": "^3.3.0"
