@@ -60,7 +60,7 @@ class FollowContoller {
 
       const newFollowingMailConfig = {
         to: `${userToBeFollowed.email}`,
-        from: 'notification@neon-ah.com',
+        from: 'notification@authors-haven.com',
         subject: 'New Follower Alert',
         html: newFollowerTemplate(userToBeFollowed, followersUserName)
       };

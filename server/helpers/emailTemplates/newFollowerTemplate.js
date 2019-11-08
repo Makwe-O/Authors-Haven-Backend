@@ -21,9 +21,9 @@ const newFollowerTemplate = (user, followerUserName) => `<!DOCTYPE html>
         alt="logo"
       />
       <h3 class="username">Hi ${user.fullName},</h3>
-      <p class="message">Huraayy 🚀🚀 <a href=https://neon-ah-frontend-staging.herokuapp.com/users/${followerUserName}>${followerUserName}</a> just followed you.
+      <p class="message">Huraayy 🚀🚀 <a href=https://authors-haven-app-21.herokuapp.com/users/${followerUserName}>${followerUserName}</a> just followed you.
       </p>
-      <a class="reset-btn" href=https://neon-ah-frontend-staging.herokuapp.com/users/following>
+      <a class="reset-btn" href=https://authors-haven-app-21.herokuapp.com/users/following>
         See your follower base
       </a>
     </div>

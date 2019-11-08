@@ -13,7 +13,14 @@ import TokenManager from '../helpers/TokenManager';
 import SearchController from './SearchController';
 
 const {
-  Article, Tag, User, Follow, Comment, Notification, Sequelize, Highlight
+  Article,
+  Tag,
+  User,
+  Follow,
+  Comment,
+  Notification,
+  Sequelize,
+  Highlight
 } = db;
 const { Op } = Sequelize;
 const { createReadingStats } = ReadingStatsContoller;
@@ -32,9 +39,7 @@ class ArticleController {
   static async create(req, res) {
     try {
       const { userId, userName } = req.user;
-      const {
-        title, content, isPublished, banner, tagsList
-      } = req.body;
+      const { title, content, isPublished, banner, tagsList } = req.body;
       const tagsArray = tagsList ? Util.createArrayOfStrings(tagsList) : [];
 
       const articleData = {
@@ -43,8 +48,8 @@ class ArticleController {
         title,
         content,
         banner:
-          banner
-          || 'https://res.cloudinary.com/jesseinit/image/upload/v1548941969/photo-1476242906366-d8eb64c2f661.jpg',
+          banner ||
+          'https://res.cloudinary.com/jesseinit/image/upload/v1548941969/photo-1476242906366-d8eb64c2f661.jpg',
         tagsList: tagsArray,
         isPublished: Boolean(isPublished),
         isReported: false
@@ -58,15 +63,23 @@ class ArticleController {
           {
             model: User,
             as: 'followingUser',
-            attributes: ['id', 'fullName', 'email', 'getEmailsNotification', 'getInAppNotification']
+            attributes: [
+              'id',
+              'fullName',
+              'email',
+              'getEmailsNotification',
+              'getInAppNotification'
+            ]
           }
         ]
       });
 
-      const myFollowers = myFollowersList.map(user => user.dataValues.followingUser.dataValues);
+      const myFollowers = myFollowersList.map(
+        user => user.dataValues.followingUser.dataValues
+      );
 
       if (articleData.isPublished) {
-        myFollowers.forEach(async (follower) => {
+        myFollowers.forEach(async follower => {
           await Notification.create({
             message: `${userName} just published a new article`,
             senderId: userId,
@@ -75,7 +88,7 @@ class ArticleController {
 
           const newArticleMailConfig = {
             to: `${follower.email}`,
-            from: 'notification@neon-ah.com',
+            from: 'notification@authors-haven.com',
             subject: 'New Article Alert',
             html: newArticleTemplate(follower, articleData, userName)
           };
@@ -86,7 +99,10 @@ class ArticleController {
           }
 
           if (follower.getInAppNotification) {
-            Util.sendInAppNotification([follower], `${userName} just published a new article`);
+            Util.sendInAppNotification(
+              [follower],
+              `${userName} just published a new article`
+            );
           }
         });
       }
@@ -156,17 +172,25 @@ class ArticleController {
         offset
       });
 
-      const [totalArticles, articles] = await Promise.all([totalArticlesPromise, articlesPromise]);
+      const [totalArticles, articles] = await Promise.all([
+        totalArticlesPromise,
+        articlesPromise
+      ]);
 
       if (articles.count > 0) {
-        const articleList = articles.rows.map((article) => {
+        const articleList = articles.rows.map(article => {
           article = article.toJSON();
           article.timeToRead = TimeToRead.readTime(article);
           article.tags = article.tags.map(tag => tag.name);
           return article;
         });
 
-        const paginatedData = pagination(articleList.length, limit, currentPage, totalArticles);
+        const paginatedData = pagination(
+          articleList.length,
+          limit,
+          currentPage,
+          totalArticles
+        );
 
         return response(res, 200, 'success', 'All articles', null, {
           articles: articleList,
@@ -253,7 +277,7 @@ class ArticleController {
       const tags = article.tags.map(tag => tag.name);
       article.tags = tags;
       article.timeToRead = TimeToRead.readTime(article);
-      article.comments = article.comments.map((comment) => {
+      article.comments = article.comments.map(comment => {
         if (comment.highlight) {
           comment.highlight = comment.highlight.highlightedText;
         }
@@ -263,7 +287,14 @@ class ArticleController {
       article.createdAt = Util.formatDate(article.createdAt);
       article.updatedAt = Util.formatDate(article.updatedAt);
 
-      return response(res, 200, 'success', 'Article was fetched successfully', null, article);
+      return response(
+        res,
+        200,
+        'success',
+        'Article was fetched successfully',
+        null,
+        article
+      );
     } catch (error) {
       return response(res, 500, 'failure', 'server error', {
         message: 'Something went wrong on the server'
@@ -291,9 +322,10 @@ class ArticleController {
       });
 
       if (result) {
-        const articleSlug = result.title.toLowerCase() === req.body.title.toLowerCase()
-          ? result.slug
-          : ArticleHelper.generateArticleSlug(req.body.title);
+        const articleSlug =
+          result.title.toLowerCase() === req.body.title.toLowerCase()
+            ? result.slug
+            : ArticleHelper.generateArticleSlug(req.body.title);
 
         req.body.slug = articleSlug;
         let article = await result.update(req.body);
@@ -301,7 +333,14 @@ class ArticleController {
         article.timeToRead = TimeToRead.readTime(article);
         article.createdAt = Util.formatDate(article.createdAt);
         article.updatedAt = Util.formatDate(article.updatedAt);
-        return response(res, 200, 'success', 'Article was updated successfully', null, article);
+        return response(
+          res,
+          200,
+          'success',
+          'Article was updated successfully',
+          null,
+          article
+        );
       }
     } catch (error) {
       return response(
@@ -334,7 +373,14 @@ class ArticleController {
       });
       if (article) {
         await article.destroy();
-        return response(res, 200, 'success', 'Article was deleted successfully', null, null);
+        return response(
+          res,
+          200,
+          'success',
+          'Article was deleted successfully',
+          null,
+          null
+        );
       }
     } catch (error) {
       return response(
@@ -360,7 +406,14 @@ class ArticleController {
     if (keyword) {
       SearchController.keyword(keyword, req, res);
     } else {
-      return response(res, 400, 'failure', 'No search parameters supplied', null, null);
+      return response(
+        res,
+        400,
+        'failure',
+        'No search parameters supplied',
+        null,
+        null
+      );
     }
   }
 
@@ -388,7 +441,7 @@ class ArticleController {
     }
 
     article = article.toJSON();
-    const url = `https://neon-ah-frontend-staging.herokuapp.com/articles/${slug}`;
+    const url = `https://authors-haven-app-21.herokuapp.com/articles/${slug}`;
     const postContent = {
       platform,
       title: article.title,
@@ -421,9 +474,7 @@ class ArticleController {
   static async fetchAllUserArticles(req, res) {
     try {
       const { userId } = req.user;
-      const {
-        tag, drafts, published, page
-      } = req.query;
+      const { tag, drafts, published, page } = req.query;
 
       const limit = Number(req.query.limit) || 20;
       const currentPage = Number(page) || 1;
@@ -461,7 +512,7 @@ class ArticleController {
       });
 
       if (articles.count > 0) {
-        let articleList = articles.rows.map((article) => {
+        let articleList = articles.rows.map(article => {
           article = article.toJSON();
           article.timeToRead = TimeToRead.readTime(article);
           article.tags = article.tags.map(articleTag => articleTag.name);
@@ -469,14 +520,29 @@ class ArticleController {
         });
 
         if (tag) {
-          articleList = ArticleHelper.filterAuthorArticle(articleList, 'tag', tag);
+          articleList = ArticleHelper.filterAuthorArticle(
+            articleList,
+            'tag',
+            tag
+          );
         } else if (drafts === '') {
-          articleList = ArticleHelper.filterAuthorArticle(articleList, 'drafts');
+          articleList = ArticleHelper.filterAuthorArticle(
+            articleList,
+            'drafts'
+          );
         } else if (published === '') {
-          articleList = ArticleHelper.filterAuthorArticle(articleList, 'published');
+          articleList = ArticleHelper.filterAuthorArticle(
+            articleList,
+            'published'
+          );
         }
 
-        const paginatedData = pagination(articleList.length, limit, currentPage, totalArticles);
+        const paginatedData = pagination(
+          articleList.length,
+          limit,
+          currentPage,
+          totalArticles
+        );
         const data = {
           articles: articleList,
           paginatedData

@@ -26,7 +26,7 @@ const passwordResetEmailTemplate = (user, token) => `
         You recently requested to reset your password for your Authors Haven's account. Use the
         button below to reset it. This password reset is only valid for the next 24 hours.
       </p>
-      <a class="reset-btn" href="https://neon-ah-frontend-staging.herokuapp.com/reset-password/${token}">
+      <a class="reset-btn" href="https://authors-haven-app-21.herokuapp.com/reset-password/${token}">
         Reset your password
       </a>
     </div>
