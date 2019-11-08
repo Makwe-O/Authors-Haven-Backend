@@ -21,13 +21,9 @@ const newArticleTemplate = (follower, article, userName) => `<!DOCTYPE html>
         alt="logo"
       />
       <h3 class="username">Hi ${follower.fullName},</h3>
-      <p class="message">An <a href=https://neon-ah-frontend-staging.herokuapp.com/users/${userName}>author you follow</a> just published a <a href=https://neon-ah-frontend-staging.herokuapp.com/articles/${
-  article.slug
-}>new article</a> .
+      <p class="message">An <a href=https://authors-haven-app-21.herokuapp.com/users/${userName}>author you follow</a> just published a <a href=https://authors-haven-app-21.herokuapp.com/articles/${article.slug}>new article</a> .
       </p>
-      <a class="reset-btn" href=https://neon-ah-frontend-staging.herokuapp.com/articles/${
-  article.slug
-}>
+      <a class="reset-btn" href=https://authors-haven-app-21.herokuapp.com/articles/${article.slug}>
         Read Article
       </a>
     </div>

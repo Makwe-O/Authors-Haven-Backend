@@ -5,9 +5,7 @@ import newCommentTemplate from '../helpers/emailTemplates/newCommentTemplate';
 import Util from '../helpers/Util';
 import eventHandler from '../helpers/eventsHandler';
 
-const {
-  Article, Comment, User, Notification, Highlight
-} = db;
+const { Article, Comment, User, Notification, Highlight } = db;
 /**
  * @class CommentController
  */
@@ -69,7 +67,11 @@ class CommentController {
         { dataValues: articleAuthor },
         { dataValues: createdComment },
         { dataValues: commenter }
-      ] = await Promise.all([getAuthorPromise, createCommentPromise, getCommenterPromise]);
+      ] = await Promise.all([
+        getAuthorPromise,
+        createCommentPromise,
+        getCommenterPromise
+      ]);
 
       if (isValidHighlight) {
         await Highlight.create({
@@ -97,7 +99,7 @@ class CommentController {
 
       const newCommentMailConfig = {
         to: `${articleAuthor.email}`,
-        from: 'notification@neon-ah.com',
+        from: 'notification@authors-haven.com',
         subject: 'New Comment Alert',
         html: newCommentTemplate(articleAuthor, article)
       };
@@ -111,7 +113,14 @@ class CommentController {
         Util.sendInAppNotification([articleAuthor], notification.message);
       }
 
-      response(res, 201, 'success', 'Comment created', null, thisComment.dataValues);
+      response(
+        res,
+        201,
+        'success',
+        'Comment created',
+        null,
+        thisComment.dataValues
+      );
     } catch (error) {
       return response(
         res,
@@ -160,7 +169,14 @@ class CommentController {
       });
 
       if (commentsQuery.length === 0) {
-        return response(res, 404, 'failure', 'Comment with the articleId not found', null, null);
+        return response(
+          res,
+          404,
+          'failure',
+          'Comment with the articleId not found',
+          null,
+          null
+        );
       }
 
       const comments = [];
@@ -216,7 +232,14 @@ class CommentController {
       });
 
       if (comment) {
-        return response(res, 200, 'success', 'Comment found', null, comment.dataValues);
+        return response(
+          res,
+          200,
+          'success',
+          'Comment found',
+          null,
+          comment.dataValues
+        );
       }
     } catch (error) {
       if (error.name === 'SequelizeDatabaseError' || null) {
@@ -275,13 +298,27 @@ class CommentController {
       });
 
       if (!foundComment) {
-        return response(res, 404, 'failure', 'Update Failed - Comment not found', null, null);
+        return response(
+          res,
+          404,
+          'failure',
+          'Update Failed - Comment not found',
+          null,
+          null
+        );
       }
 
       const { dataValues: existingComment } = foundComment;
 
       if (existingComment.articleId !== articleFound.id) {
-        return response(res, 404, 'failure', 'Update Failed - Comment not found', null, null);
+        return response(
+          res,
+          404,
+          'failure',
+          'Update Failed - Comment not found',
+          null,
+          null
+        );
       }
 
       if (existingComment.userId !== userId) {
@@ -322,7 +359,14 @@ class CommentController {
       });
 
       if (updateComment) {
-        return response(res, 200, 'success', 'Comment updated', null, updateComment.dataValues);
+        return response(
+          res,
+          200,
+          'success',
+          'Comment updated',
+          null,
+          updateComment.dataValues
+        );
       }
     } catch (error) {
       return response(
@@ -365,8 +409,17 @@ class CommentController {
           exclude: ['commentId']
         }
       });
-      if (getCommentDelete.dataValues.articleId !== articleFound.dataValues.id) {
-        return response(res, 404, 'failure', 'Comment not found for article id', null, null);
+      if (
+        getCommentDelete.dataValues.articleId !== articleFound.dataValues.id
+      ) {
+        return response(
+          res,
+          404,
+          'failure',
+          'Comment not found for article id',
+          null,
+          null
+        );
       }
       if (getCommentDelete.dataValues.userId !== userId) {
         return response(

@@ -36,7 +36,7 @@ class MailManager {
   static sendVerificationEmail({ createdUser, token }) {
     const message = {
       to: `${createdUser.email}`,
-      from: 'notification@neon-ah.com',
+      from: 'notification@authors-haven.com',
       subject: "Welcome to Author's Haven! Confirm your email",
       html: verifyEmailTemplate(createdUser, token)
     };

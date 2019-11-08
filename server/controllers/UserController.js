@@ -8,12 +8,7 @@ import response from '../helpers/response';
 import pagination from '../helpers/pagination';
 import passwordResetEmailTemplate from '../helpers/emailTemplates/resetPasswordTemplate';
 
-const {
-  User,
-  Article,
-  Sequelize,
-  Notification
-} = db;
+const { User, Article, Sequelize, Notification } = db;
 const { Op } = Sequelize;
 
 /**
@@ -56,7 +51,7 @@ class UserController {
 
       const passwordResetEmail = {
         to: `${user.email}`,
-        from: 'notification@neon-ah.com',
+        from: 'notification@authors-haven.com',
         subject: 'Password Reset Link',
         html: passwordResetEmailTemplate(user, token)
       };
@@ -140,14 +135,15 @@ class UserController {
       });
     } catch (error) {
       if (
-        error.name === 'TokenExpiredError'
-        || error.name === 'JsonWebTokenError'
+        error.name === 'TokenExpiredError' ||
+        error.name === 'JsonWebTokenError'
       ) {
         return res.status(401).send({
           status: 'failure',
           data: {
             statusCode: '401',
-            message: 'Sorry! Link has expired. Kindly re-initiate password reset.'
+            message:
+              'Sorry! Link has expired. Kindly re-initiate password reset.'
           }
         });
       }
@@ -170,9 +166,7 @@ class UserController {
    */
   static async signUp(req, res) {
     try {
-      const {
-        fullName, userName, email, password
-      } = req.body;
+      const { fullName, userName, email, password } = req.body;
 
       const foundUser = await User.findOne({
         where: {
@@ -210,7 +204,8 @@ class UserController {
         password: hashedPassword,
         roleId: '{3ceb546e-054d-4c1d-8860-e27c209d4ae3}',
         authTypeId: '{15745c60-7b1a-11e8-9c9c-2d42b21b1a3e}',
-        img: 'https://res.cloudinary.com/jesseinit/image/upload/v1551253945/neon-ah/defaultUserProfileImage.svg'
+        img:
+          'https://res.cloudinary.com/jesseinit/image/upload/v1551253945/neon-ah/defaultUserProfileImage.svg'
       });
 
       const payload = {
@@ -448,9 +443,7 @@ class UserController {
         }
       };
 
-      const {
-        id, displayName, emails, photos, provider
-      } = profile;
+      const { id, displayName, emails, photos, provider } = profile;
 
       if (!emails) {
         const userWithNoEmail = { hasNoEmail: true };
@@ -490,7 +483,9 @@ class UserController {
    */
   static handleSocialAuth(req, res) {
     if (req.user.hasNoEmail) {
-      return res.redirect(`${process.env.FRONTEND_URL}/auth/social?error=${400}`);
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/auth/social?error=${400}`
+      );
     }
     const payload = {
       userId: req.user.id,
@@ -500,7 +495,9 @@ class UserController {
       img: req.user.img
     };
     const token = TokenManager.sign(payload);
-    return res.redirect(`${process.env.FRONTEND_URL}/auth/social?token=${token}`);
+    return res.redirect(
+      `${process.env.FRONTEND_URL}/auth/social?token=${token}`
+    );
   }
 
   /**
@@ -550,7 +547,14 @@ class UserController {
         response(res, 404, 'failure', 'User not found');
         return;
       }
-      response(res, 200, 'success', 'User retrieved successfully', null, userProfile);
+      response(
+        res,
+        200,
+        'success',
+        'User retrieved successfully',
+        null,
+        userProfile
+      );
     } catch (error) {
       response(res, 500, 'failure', 'An error occured on the server');
     }
@@ -603,7 +607,14 @@ class UserController {
         response(res, 404, 'failure', 'User not found');
         return;
       }
-      response(res, 200, 'success', 'User retrieved successfully', null, userProfile);
+      response(
+        res,
+        200,
+        'success',
+        'User retrieved successfully',
+        null,
+        userProfile
+      );
     } catch (error) {
       response(res, 500, 'failure', 'An error occured on the server');
     }
@@ -644,7 +655,10 @@ class UserController {
         where: { id: req.user.userId }
       });
 
-      if (checkUserName.dataValues.userName && checkUserName.dataValues.id !== req.user.userId) {
+      if (
+        checkUserName.dataValues.userName &&
+        checkUserName.dataValues.id !== req.user.userId
+      ) {
         return response(res, 409, 'failure', 'Username already exists');
       }
 
@@ -752,18 +766,34 @@ class UserController {
         let notificationList = notifications;
 
         if (read === '') {
-          notificationList = notifications.filter(notification => notification.isRead === true);
+          notificationList = notifications.filter(
+            notification => notification.isRead === true
+          );
         } else if (unread === '') {
-          notificationList = notifications.filter(notification => notification.isRead === false);
+          notificationList = notifications.filter(
+            notification => notification.isRead === false
+          );
         }
 
-        const paginatedData = pagination(notificationList.length, limit, currentPage, notificationList.length);
+        const paginatedData = pagination(
+          notificationList.length,
+          limit,
+          currentPage,
+          notificationList.length
+        );
         const data = {
           notifications: notificationList,
           paginatedData
         };
 
-        return response(res, 200, 'success', 'All User notifications', null, data);
+        return response(
+          res,
+          200,
+          'success',
+          'All User notifications',
+          null,
+          data
+        );
       }
       return response(res, 200, 'success', 'You have no notifications yet');
     } catch (error) {
@@ -777,7 +807,6 @@ class UserController {
       );
     }
   }
-
 
   /**
    * @static
@@ -804,9 +833,19 @@ class UserController {
       });
 
       if (result) {
-        let notification = await result.update({ isRead: true }, { fields: Object.keys({ isRead: true }) });
+        let notification = await result.update(
+          { isRead: true },
+          { fields: Object.keys({ isRead: true }) }
+        );
         notification = notification.toJSON();
-        return response(res, 200, 'success', 'Notification was updated successfully', null, notification);
+        return response(
+          res,
+          200,
+          'success',
+          'Notification was updated successfully',
+          null,
+          notification
+        );
       }
       return response(res, 404, 'failure', 'Notification does not exist');
     } catch (error) {
